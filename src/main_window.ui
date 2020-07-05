@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>421</width>
-    <height>317</height>
+    <width>310</width>
+    <height>503</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -47,8 +47,8 @@
    <widget class="QPushButton" name="pushButton_runbot">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>10</y>
+      <x>230</x>
+      <y>230</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -60,8 +60,8 @@
    <widget class="QPushButton" name="pushButton_update">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>200</y>
+      <x>20</x>
+      <y>460</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -86,8 +86,8 @@
    <widget class="QPushButton" name="pushButton_copy_even">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>200</y>
+      <x>80</x>
+      <y>460</y>
       <width>61</width>
       <height>31</height>
      </rect>
@@ -99,7 +99,7 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>120</x>
       <y>80</y>
       <width>170</width>
       <height>111</height>
@@ -297,8 +297,8 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>60</y>
+      <x>10</x>
+      <y>320</y>
       <width>131</width>
       <height>129</height>
      </rect>
@@ -349,6 +349,21 @@
        </property>
       </widget>
      </item>
+     <item row="5" column="1">
+      <widget class="QLabel" name="label_unrealized_gain">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_cur_position_8">
        <property name="font">
@@ -379,8 +394,8 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QLabel" name="label_unrealized_gain">
+     <item row="2" column="1">
+      <widget class="QLabel" name="label_average_contract_price">
        <property name="font">
         <font>
          <pointsize>10</pointsize>
@@ -411,21 +426,6 @@
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="label_cur_position_size">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>0</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLabel" name="label_average_contract_price">
        <property name="font">
         <font>
          <pointsize>10</pointsize>
@@ -610,13 +610,22 @@
      <rect>
       <x>10</x>
       <y>80</y>
-      <width>81</width>
+      <width>108</width>
       <height>111</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>数量</string>
        </property>
@@ -627,6 +636,12 @@
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>価格</string>
        </property>
@@ -648,7 +663,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>35</width>
+         <width>50</width>
          <height>18</height>
         </size>
        </property>
@@ -673,6 +688,12 @@
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>offset</string>
        </property>
@@ -691,7 +712,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>35</width>
+         <width>50</width>
          <height>18</height>
         </size>
        </property>
@@ -724,7 +745,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>35</width>
+         <width>50</width>
          <height>18</height>
         </size>
        </property>
@@ -749,6 +770,12 @@
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>stop</string>
        </property>
@@ -767,7 +794,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>35</width>
+         <width>50</width>
          <height>18</height>
         </size>
        </property>
