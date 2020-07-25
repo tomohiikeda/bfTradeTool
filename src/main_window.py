@@ -8,11 +8,18 @@ import pyperclip
 
 class MainWindow:
 
+    #
+    # コンストラクタ
+    #
     def __init__(self):
         self.trade = trade_api.TradeApi()
         self.chart = chart_api.ChartApi()
         self.algo = algo.Algo(self.trade, self.chart)
+        self.prev_ltp = 0
 
+    #
+    # 初期化処理
+    #
     def init(self):
         ui_path = os.path.dirname(os.path.abspath(__file__))
         Form, Window = uic.loadUiType(os.path.join(ui_path, "main_window.ui"))
@@ -20,6 +27,7 @@ class MainWindow:
         window = Window()
         self.form = Form()
         self.form.setupUi(window)
+        window.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         window.show()
 
         # UI初期設定
@@ -45,7 +53,7 @@ class MainWindow:
         # ハンドラ登録
         self.form.pushButton_Buy.clicked.connect(self.__on_clicked_buy)
         self.form.pushButton_Sell.clicked.connect(self.__on_clicked_sell)
-        
+
         self.form.radioButton_market.clicked.connect(self.__on_clicked_order_type)
         self.form.radioButton_limit.clicked.connect(self.__on_clicked_order_type)
         self.form.radioButton_limit_stop.clicked.connect(self.__on_clicked_order_type)
@@ -54,7 +62,7 @@ class MainWindow:
         self.form.radioButton_stop.clicked.connect(self.__on_clicked_order_type)
 
         self.form.pushButton_update.clicked.connect(self.__update_current_position)
-        self.form.pushButton_runbot.clicked.connect(self.algo.start)
+        self.form.pushButton_runbot.clicked.connect(self.__algo_start)
         self.form.pushButton_cancel.clicked.connect(self.trade.cancel_all_orders)
 
         self.form.pushButton_copy_ltp_plus_2000.clicked.connect(self.__on_clicked_copy_lpt_plus_2000)
@@ -66,33 +74,43 @@ class MainWindow:
 
         sys.exit(app.exec_())
 
+    #
+    # LTPの更新処理
+    #
     def __update_ltp(self):
         ltp = self.trade.get_ltp()
-        break_even_price = float(self.form.label_break_even_price.text().replace(',', ''))
+        diff = ltp - self.prev_ltp
+        total_swap = float(self.form.label_cur_total_swap.text().replace(',', ''))
+        average_contract_price = float(self.form.label_average_contract_price.text().replace(',', ''))
         size = float(self.form.label_cur_position_size.text().replace(',', ''))
         cur_side = self.form.label_cur_side.text()
         if cur_side == '-':
             unrealized_gain = 0
         elif cur_side == 'L':
-            unrealized_gain = (ltp - break_even_price) * size
+            unrealized_gain = (ltp - average_contract_price) * size - total_swap
         else:
-            unrealized_gain = (break_even_price - ltp) * size
+            unrealized_gain = (average_contract_price - ltp) * size - total_swap
         self.form.label_ltp.setText('{:,.0f}'.format(ltp))
+        self.form.label_ltp_diff.setText('(' + '{:,.0f}'.format(diff) + ')')
         self.form.label_unrealized_gain.setText('{:,.0f}'.format(unrealized_gain))
+        self.prev_ltp = ltp
         return
 
+    #
+    # 現在ポジションの更新処理
+    #
     def __update_current_position(self):
-        position_size = self.trade.get_positions_size()
-        total_swap = self.trade.get_total_swap_point()
-        average_price = self.trade.get_average_contract_price()
-        break_even_price = average_price - total_swap
-        self.form.label_cur_side.setText(self.trade.get_cur_side())
-        self.form.label_cur_position_size.setText('{:.2f}'.format(position_size))
-        self.form.label_cur_total_swap.setText('{:,.0f}'.format(total_swap))
-        self.form.label_average_contract_price.setText('{:,.0f}'.format(average_price))
-        self.form.label_break_even_price.setText('{:,.0f}'.format(break_even_price))
+        side, size, swap, average, even_price = self.trade.get_current_position()
+        self.form.label_cur_side.setText(side)
+        self.form.label_cur_position_size.setText('{:.2f}'.format(size))
+        self.form.label_cur_total_swap.setText('{:,.0f}'.format(swap))
+        self.form.label_average_contract_price.setText('{:,.0f}'.format(average))
+        self.form.label_break_even_price.setText('{:,.0f}'.format(even_price))
         return
 
+    #
+    # 買いボタンクリックハンドラ
+    #
     def __on_clicked_buy(self):
         size = float(self.form.plainTextEdit_size.toPlainText())
         price = float(self.form.plainTextEdit_price.toPlainText())
@@ -112,6 +130,9 @@ class MainWindow:
         elif self.form.radioButton_stop.isChecked():
             self.trade.stop_order('BUY', price, size)
 
+    #
+    # 売りボタンクリックハンドラ
+    #
     def __on_clicked_sell(self):
         size = float(self.form.plainTextEdit_size.toPlainText())
         price = float(self.form.plainTextEdit_price.toPlainText())
@@ -131,6 +152,9 @@ class MainWindow:
         elif self.form.radioButton_stop.isChecked():
             self.trade.stop_order('SELL', price, size)
 
+    #
+    # 注文種別ラジオボタンクリックハンドラ
+    #
     def __on_clicked_order_type(self):
         if self.form.radioButton_market.isChecked():
             self.form.plainTextEdit_price.setEnabled(False)
@@ -163,7 +187,7 @@ class MainWindow:
 
     def __on_clicked_copy_lpt_plus_1000(self):
         self.__copy_clipboard_lpt_offset(1000)
-    
+
     def __on_clicked_copy_lpt_plus_2000(self):
         self.__copy_clipboard_lpt_offset(2000)
 
@@ -184,3 +208,6 @@ class MainWindow:
         copy_price = '{:.0f}'.format(ltp+offset)
         pyperclip.copy(copy_price)
         self.form.plainTextEdit_price.setPlainText(copy_price)
+
+    def __algo_start(self, offset):
+        self.algo.start('SIM')

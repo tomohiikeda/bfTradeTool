@@ -26,6 +26,16 @@ class CryptoWatchAPIWrapper:
         resp = requests.get(url, params=params).json()
         return resp
 
-    def get_price(self):
+    def get_current_price(self):
         url = self.__url_base + self.markets + "/" + self.pair + "/price"
-        return requests.get(url).json()
+        return requests.get(url).json()['result']['price']
+
+    def get_close_price(self, time, periods):
+        params = {
+            'periods': str(periods),
+            'after' : str(time - periods),
+            'before': str(time),
+        }
+        url = self.__url_base + self.markets + "/" + self.pair + "/ohlc"
+        resp = requests.get(url, params=params).json()
+        return resp['result'][str(periods)][0][4]
